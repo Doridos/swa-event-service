@@ -1,0 +1,27 @@
+{
+  "name": "swa-event-service",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Doridos/swa-event-service.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Doridos/swa-event-service/issues"
+  },
+  "homepage": "https://github.com/Doridos/swa-event-service#readme",
+  "description": "Dockerized Event service, which uses NodeJS backend, a PostgreSQL and a Prisma ORM.",
+  "dependencies": {
+    "@prisma/client": "^6.10.1",
+    "express": "^5.1.0",
+    "pg": "^8.16.3",
+    "prisma": "^6.10.1"
+  }
+}
