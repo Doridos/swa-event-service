@@ -16,12 +16,12 @@ datasource db {
 }
 
 model Event {
-  id               Int      @id @default(autoincrement())
-  name             String
-  dateOf           DateTime
-  location         String
-  capacity         Int
-  userId           Int
-  soldTickets      Int      @default(0)
-  validatedTickets Int      @default(0)
+  id       Int      @id @default(autoincrement())
+  name     String
+  dateOf   DateTime
+  location String
+  capacity Int
+  userId   Int
+  // soldTickets      Int      @default(0)
+  // validatedTickets Int      @default(0)
 }

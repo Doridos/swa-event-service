@@ -1,0 +1,29 @@
+### FETCH all events
+GET http://localhost:8383/api/v1/info/all
+
+### Create a new event
+POST http://localhost:8383/api/v1
+Content-Type: application/json
+
+{
+  "name": "Test name",
+  "dateOf": "2024-06-10T12:00:00.000Z",
+  "location": "Prague",
+  "capacity": 100,
+  "userId": 42
+}
+
+### Update an event
+PUT http://localhost:8383/api/v1/1
+Content-Type: application/json
+
+{
+  "name": "New Test name"
+}
+
+### Get capacity of event
+GET http://localhost:8383/api/v1/info/1/capacity
+
+
+### Delete event
+DELETE http://localhost:8383/api/v1/1

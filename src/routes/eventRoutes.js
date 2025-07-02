@@ -1,5 +1,7 @@
 import express from "express";
 import prisma from "../prismaClient.js";
+import axios from "axios";
+
 
 const router = express.Router();
 
@@ -8,7 +10,38 @@ router.get('/info/all', async (req, res) => {
     res.json(events);
 })
 
-router.get('/info/:id', async (req, res) => {
+
+
+router.get('/info/all/available', async (req, res) => {
+    try {
+
+        const soldTicketsResponse = await axios.get('URL_LUCASOVA_API');
+        // expected result: [{ eventId: 1, soldTickets: 10 }, ...]
+        const soldTicketsMap = {};
+        soldTicketsResponse.data.forEach(item => {
+            soldTicketsMap[item.eventId] = item.soldTickets;
+        });
+
+
+        const allEvents = await prisma.event.findMany({});
+
+        const availableEvents = allEvents.filter(event => {
+            const sold = soldTicketsMap[event.id] || 0;
+            return (event.capacity - sold) > 0;
+        });
+
+        res.json(availableEvents);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+//TODO write endpoint only of events which have available places
+// Tom will call validator service
+// I will get how many tickets were sold by calling endpoint of Lucas and how many were verified calling the validator event
+// TODO OpenApi spec and consul
+
+router.get('/info/:id/validated', async (req, res) => {
     const { id } = req.params;
     const event = await prisma.event.findUnique({
         where: {
@@ -16,6 +49,16 @@ router.get('/info/:id', async (req, res) => {
         }
     })
     res.json(event);
+})
+
+router.get('/info/:id/validatedCount', async (req, res) => {
+    const { id } = req.params;
+    const validatedTickets = await axios.get('URL_ROSTOVA_API');
+    const returnJson = {
+        eventId: id,
+        validatedTickets: validatedTickets
+    }
+    res.json(returnJson);
 })
 
 router.get('/info/:id/capacity', async (req, res) => {
@@ -27,8 +70,9 @@ router.get('/info/:id/capacity', async (req, res) => {
     if (!event) {
         return res.status(404).json({ error: "Event not found" });
     }
-    const availableTickets = event.capacity - event.soldTickets;
-    res.json({ availableTickets });
+    const eventCapacity = event.capacity
+    res.json({ eventCapacity });
+    //return only capacity, because availableTickets is unnecessarily
 });
 
 router.post('/', async (req, res) => {
@@ -45,25 +89,25 @@ router.post('/', async (req, res) => {
                 // soldTickets and validatedTickets automatically set to 0
             }
         });
-        res.json(event);
+        res.status(201).json(event);
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
 });
 
 router.put('/:id', async (req, res) => {
-    const { name, dateOf, location, capacity, userId } = req.body;
     const { id } = req.params;
+    const data = {};
+    if (req.body.name !== undefined) data.name = req.body.name;
+    if (req.body.dateOf !== undefined) data.dateOf = new Date(req.body.dateOf);
+    if (req.body.location !== undefined) data.location = req.body.location;
+    if (req.body.capacity !== undefined) data.capacity = parseInt(req.body.capacity);
+    if (req.body.userId !== undefined) data.userId = req.body.userId;
+
     try {
         const event = await prisma.event.update({
             where: { id: parseInt(id) },
-            data: {
-                name,
-                dateOf: new Date(dateOf),
-                location,
-                capacity: parseInt(capacity),
-                userId: userId
-            }
+            data
         });
         res.json(event);
     } catch (error) {
