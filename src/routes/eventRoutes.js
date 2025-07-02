@@ -41,14 +41,19 @@ router.get('/info/all/available', async (req, res) => {
 // I will get how many tickets were sold by calling endpoint of Lucas and how many were verified calling the validator event
 // TODO OpenApi spec and consul
 
-router.get('/info/:id/validated', async (req, res) => {
+router.get('/info/:id', async (req, res) => {
     const { id } = req.params;
     const event = await prisma.event.findUnique({
         where: {
             id: parseInt(id)
         }
     })
-    res.json(event);
+    if (!event) {
+        return res.status(404).json({ error: "Event not found" });
+    }
+    else {
+        res.json(event);
+    }
 })
 
 router.get('/info/:id/validatedCount', async (req, res) => {
@@ -65,7 +70,7 @@ router.get('/info/:id/capacity', async (req, res) => {
     const { id } = req.params;
     const event = await prisma.event.findUnique({
         where: { id: parseInt(id) },
-        select: { capacity: true, soldTickets: true }
+        select: { capacity: true }
     });
     if (!event) {
         return res.status(404).json({ error: "Event not found" });

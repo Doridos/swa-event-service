@@ -1,6 +1,19 @@
 ### FETCH all events
 GET http://localhost:8383/api/v1/info/all
 
+### FETCH all events which still have free capacity
+GET http://localhost:8383/api/v1/info/available
+
+### FETCH one event
+GET http://localhost:8383/api/v1/info/1
+
+### FETCH event validated tickets
+GET http://localhost:8383/api/v1/info/1/validatedCount
+
+### FETCH capacity of event
+GET http://localhost:8383/api/v1/info/1/capacity
+
+
 ### Create a new event
 POST http://localhost:8383/api/v1
 Content-Type: application/json
@@ -18,12 +31,12 @@ PUT http://localhost:8383/api/v1/1
 Content-Type: application/json
 
 {
-  "name": "New Test name"
+  "name": "Test name"
 }
-
-### Get capacity of event
-GET http://localhost:8383/api/v1/info/1/capacity
-
 
 ### Delete event
 DELETE http://localhost:8383/api/v1/1
+
+### Health check
+GET http://localhost:8383/health
+

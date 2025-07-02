@@ -1,0 +1,225 @@
+openapi: 3.0.0
+info:
+  title: Event Service API
+  version: 1.1.0
+  description: API for managing events
+
+servers:
+  - url: http://localhost:8383
+
+paths:
+  /info/all:
+    get:
+      summary: Get all events
+      responses:
+        '200':
+          description: List of all events
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Event'
+
+  /info/all/available:
+    get:
+      summary: Get all events with available places
+      responses:
+        '200':
+          description: List of available events
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Event'
+        '500':
+          description: Error fetching available events
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /info/{id}:
+    get:
+      summary: Get event details by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Event details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+
+  /info/{id}/validatedCount:
+    get:
+      summary: Get validated ticket count for event
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Validated ticket count
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  eventId:
+                    type: integer
+                  validatedTickets:
+                    type: integer
+        '500':
+          description: Error fetching validated ticket count
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /info/{id}/capacity:
+    get:
+      summary: Get event capacity
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Event capacity
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  eventCapacity:
+                    type: integer
+        '404':
+          description: Event not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /:
+    post:
+      summary: Create a new event
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventInput'
+      responses:
+        '201':
+          description: Event created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /{id}:
+    put:
+      summary: Update an event
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventInput'
+      responses:
+        '200':
+          description: Updated event
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    delete:
+      summary: Delete an event
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Event deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+components:
+  schemas:
+    Event:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        dateOf:
+          type: string
+          format: date-time
+        location:
+          type: string
+        capacity:
+          type: integer
+        userId:
+          type: integer
+        soldTickets:
+          type: integer
+        validatedTickets:
+          type: integer
+    EventInput:
+      type: object
+      properties:
+        name:
+          type: string
+        dateOf:
+          type: string
+          format: date-time
+        location:
+          type: string
+        capacity:
+          type: integer
+        userId:
+          type: integer
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
