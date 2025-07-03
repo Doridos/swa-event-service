@@ -65,7 +65,7 @@ app.listen(PORT, async () => {
 // Basic health check endpoint
 app.get('/health', (req, res) => res.send('OK'));
 
-process.on('SIGINT', async () => {
+async function deregisterAndExit() {
     const serviceId = `event-service-${PORT}`;
     try {
         await consulClient.agent.service.deregister(serviceId);
@@ -73,5 +73,8 @@ process.on('SIGINT', async () => {
     } catch (err) {
         console.error('There was an error while deregistering from Consul:', err);
     }
-    process.exit();
-});
+    process.exit(0);
+}
+
+process.on('SIGINT', deregisterAndExit);
+process.on('SIGTERM', deregisterAndExit);
