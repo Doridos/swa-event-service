@@ -12,8 +12,7 @@ services:
       - "8383:8383"
     depends_on:
       - db
-    volumes:
-      - .:/app
+    command: sh -c "npx prisma generate && npx prisma migrate deploy && node ./src/server.js"
 
   db:
     image: postgres:13-alpine
@@ -28,4 +27,3 @@ services:
       - postgres-data-events:/var/lib/postgresql/data
 volumes:
   postgres-data-events:
-
