@@ -16,5 +16,6 @@ COPY . .
 # Expose the port that the app runs on
 EXPOSE 8383
 
+RUN npx prisma generate
 # Define the command to run your application
-CMD ["node", "./src/server.js"]
+CMD ["sh", "-c", "npx prisma migrate dev && node ./src/server.js"]

@@ -1,6 +1,7 @@
 import express from 'express';
 import eventRoutes from "./routes/eventRoutes.js";
 import Consul from "consul";
+import os from "os";
 
 const app = express();
 const PORT = Number(process.env.PORT) || 8383;
@@ -21,10 +22,22 @@ app.use(express.json());
 // Routes
 app.use('/api/v1/', eventRoutes);
 
+function getContainerIP() {
+    const interfaces = os.networkInterfaces();
+    for (const name of Object.keys(interfaces)) {
+        for (const iface of interfaces[name]) {
+            if (iface.family === 'IPv4' && !iface.internal) {
+                return iface.address;
+            }
+        }
+    }
+    return '0.0.0.0';
+}
+
 app.listen(PORT, async () => {
     // Register to consul
     const serviceId = `event-service-${PORT}`;
-    const SERVICE_ADDRESS = process.env.HOST || 'localhost';
+    const SERVICE_ADDRESS = process.env.HOST || getContainerIP();
     let consulRegistered = false;
     try {
         await consulClient.agent.service.register({

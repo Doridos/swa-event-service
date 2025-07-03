@@ -21,8 +21,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: events
-    ports:
-      - "5432:5432"
+
     volumes:
       - postgres-data-events:/var/lib/postgresql/data
 volumes:
