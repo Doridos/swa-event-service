@@ -3,10 +3,10 @@ import eventRoutes from "./routes/eventRoutes.js";
 import Consul from "consul";
 
 const app = express();
-const PORT = process.env.PORT || 8383;
+const PORT = Number(process.env.PORT) || 8383;
 
 // Consul configuration
-const CONSUL_HOST = 'localhost'; // default consul host
+const CONSUL_HOST = process.env.CONSUL_URL; // default consul host
 const CONSUL_PORT = 8500; // default consul port
 
 const consulClient = new Consul({
@@ -39,6 +39,7 @@ app.listen(PORT, async () => {
         });
         consulRegistered = true;
     } catch (err){
+        console.log(err);
         console.error("Was not able to register in consul")
     }
     if (consulRegistered) {

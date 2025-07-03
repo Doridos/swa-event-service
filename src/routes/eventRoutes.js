@@ -15,6 +15,7 @@ router.get('/info/all', async (req, res) => {
 
 router.get('/info/all/available', async (req, res) => {
     const ticketServiceUrl = await getServiceUrl("ticket-sale-spring")
+    console.log(ticketServiceUrl)
     try {
         const soldTicketsResponse = await axios.get(`${ticketServiceUrl}/tickets/sold/`);
         const soldTicketsMap = {};

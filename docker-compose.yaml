@@ -7,6 +7,7 @@ services:
       - DATABASE_URL=postgresql://postgres:postgres@db:5432/events
       - NODE_ENV=development
       - PORT=8383
+      - CONSUL_URL=consul.fireup.studio
     ports:
       - "8383:8383"
     depends_on:
