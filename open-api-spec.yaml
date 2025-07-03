@@ -7,9 +7,32 @@ info:
 servers:
   - url: http://localhost:8383
 
+# HealthController
+tags:
+  - name: HealthController
+    description: Basic health check
+  - name: EventController
+    description: Event management
+
 paths:
+  /health:
+    get:
+      tags:
+        - HealthController
+      summary: Basic health check
+      responses:
+        '200':
+          description: Server is healthy
+          content:
+            text/plain:
+              schema:
+                type: string
+
+  # EventController endpoints
   /info/all:
     get:
+      tags:
+        - EventController
       summary: Get all events
       responses:
         '200':
@@ -23,6 +46,8 @@ paths:
 
   /info/all/available:
     get:
+      tags:
+        - EventController
       summary: Get all events with available places
       responses:
         '200':
@@ -42,6 +67,8 @@ paths:
 
   /info/{id}:
     get:
+      tags:
+        - EventController
       summary: Get event details by ID
       parameters:
         - in: path
@@ -59,6 +86,8 @@ paths:
 
   /info/{id}/validatedCount:
     get:
+      tags:
+        - EventController
       summary: Get validated ticket count for event
       parameters:
         - in: path
@@ -87,6 +116,8 @@ paths:
 
   /info/{id}/capacity:
     get:
+      tags:
+        - EventController
       summary: Get event capacity
       parameters:
         - in: path
@@ -113,6 +144,8 @@ paths:
 
   /:
     post:
+      tags:
+        - EventController
       summary: Create a new event
       requestBody:
         required: true
@@ -136,6 +169,8 @@ paths:
 
   /{id}:
     put:
+      tags:
+        - EventController
       summary: Update an event
       parameters:
         - in: path
@@ -164,6 +199,8 @@ paths:
                 $ref: '#/components/schemas/Error'
 
     delete:
+      tags:
+        - EventController
       summary: Delete an event
       parameters:
         - in: path

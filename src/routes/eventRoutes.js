@@ -1,6 +1,7 @@
 import express from "express";
 import prisma from "../prismaClient.js";
 import axios from "axios";
+import getServiceUrl from "../consul.js";
 
 
 const router = express.Router();
@@ -13,21 +14,24 @@ router.get('/info/all', async (req, res) => {
 
 
 router.get('/info/all/available', async (req, res) => {
+    const ticketServiceUrl = await getServiceUrl("ticket-sale-spring")
     try {
-
-        const soldTicketsResponse = await axios.get('URL_LUCASOVA_API');
-        // expected result: [{ eventId: 1, soldTickets: 10 }, ...]
+        const soldTicketsResponse = await axios.get(`${ticketServiceUrl}/tickets/sold/`);
         const soldTicketsMap = {};
         soldTicketsResponse.data.forEach(item => {
             soldTicketsMap[item.eventId] = item.soldTickets;
         });
 
+        const now = new Date();
+        now.setHours(0, 0, 0, 0); // set the time to start of day
 
         const allEvents = await prisma.event.findMany({});
 
         const availableEvents = allEvents.filter(event => {
+            const eventDate = new Date(event.dateOf);
+            eventDate.setHours(0, 0, 0, 0);
             const sold = soldTicketsMap[event.id] || 0;
-            return (event.capacity - sold) > 0;
+            return (event.capacity - sold) > 0 && eventDate >= now;
         });
 
         res.json(availableEvents);
@@ -57,11 +61,13 @@ router.get('/info/:id', async (req, res) => {
 })
 
 router.get('/info/:id/validatedCount', async (req, res) => {
+    const ticketServiceUrl = await getServiceUrl("ticket-validation-service")
+
     const { id } = req.params;
-    const validatedTickets = await axios.get('URL_ROSTOVA_API');
+    const validatedTicketsResponse = await axios.get(`${ticketServiceUrl}/api/event/${id}/validated-tickets-count`);
     const returnJson = {
         eventId: id,
-        validatedTickets: validatedTickets
+        validatedTickets: validatedTicketsResponse.data.validatedTicketsCount
     }
     res.json(returnJson);
 })
