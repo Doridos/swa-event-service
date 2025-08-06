@@ -21,7 +21,7 @@ router.get('/info/all/available', async (req, res) => {
         const soldTicketsMap = {};
         console.log(soldTicketsResponse.data);
         soldTicketsResponse.data.forEach(item => {
-            soldTicketsMap[item.eventId] = item.soldTickets;
+            soldTicketsMap[item.eventId] = item.ticketsSold;
         });
         console.log(soldTicketsMap);
         const now = new Date();
