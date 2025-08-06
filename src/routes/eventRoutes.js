@@ -69,7 +69,7 @@ router.get('/info/:id/validatedCount', async (req, res) => {
     console.log(validatedTicketsResponse);
     const returnJson = {
         eventId: id,
-        validatedTickets: validatedTicketsResponse.data.validatedTicketsCount
+        validatedTickets: validatedTicketsResponse.data
     }
     res.json(returnJson);
 })
