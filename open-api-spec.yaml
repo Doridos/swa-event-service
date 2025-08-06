@@ -5,7 +5,7 @@ info:
   description: API for managing events
 
 servers:
-  - url: http://localhost:8383
+  - url: https://swa.fireup.studio/events/api/v1/
 
 # HealthController
 tags:
