@@ -19,6 +19,7 @@ router.get('/info/all/available', async (req, res) => {
     try {
         const soldTicketsResponse = await axios.get(`${ticketServiceUrl}/api/v1/tickets/sold`);
         const soldTicketsMap = {};
+        console.log(soldTicketsResponse.data);
         soldTicketsResponse.data.forEach(item => {
             soldTicketsMap[item.eventId] = item.soldTickets;
         });
