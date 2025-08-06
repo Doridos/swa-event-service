@@ -22,7 +22,7 @@ router.get('/info/all/available', async (req, res) => {
         soldTicketsResponse.data.forEach(item => {
             soldTicketsMap[item.eventId] = item.soldTickets;
         });
-
+        console.log(soldTicketsMap);
         const now = new Date();
         now.setHours(0, 0, 0, 0); // set the time to start of day
 
@@ -66,6 +66,7 @@ router.get('/info/:id/validatedCount', async (req, res) => {
 
     const { id } = req.params;
     const validatedTicketsResponse = await axios.get(`${ticketServiceUrl}/api/event/${id}/validated-tickets-count`);
+    console.log(validatedTicketsResponse);
     const returnJson = {
         eventId: id,
         validatedTickets: validatedTicketsResponse.data.validatedTicketsCount
