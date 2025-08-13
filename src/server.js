@@ -1,9 +1,9 @@
 import express from 'express';
+import cors from 'cors';
 import eventRoutes from "./routes/eventRoutes.js";
 import Consul from "consul";
 import os from "os";
 
-const cors = require('cors');
 const app = express();
 const PORT = Number(process.env.PORT) || 8383;
 
