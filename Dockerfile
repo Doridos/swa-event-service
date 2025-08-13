@@ -5,7 +5,7 @@ FROM node:22-alpine
 WORKDIR /app
 
 # Copy the package.json and the package-lock.json to the container
-COPY package*.json .
+COPY package*.json ./
 
 # Install all the necesary npm packages
 RUN npm install

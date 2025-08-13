@@ -44,7 +44,7 @@ function getContainerIP() {
 app.listen(PORT, async () => {
     // Register to consul
     const serviceId = `event-service-${PORT}`;
-    const SERVICE_ADDRESS = process.env.HOST || getContainerIP();
+    const SERVICE_ADDRESS = "event-service"; //qqprocess.env.HOST || getContainerIP();
     let consulRegistered = false;
     try {
         await consulClient.agent.service.register({
@@ -55,7 +55,16 @@ app.listen(PORT, async () => {
             check: {
                 http: `http://${SERVICE_ADDRESS}:${PORT}/health`,
                 interval: '10s'
-            }
+            },
+            tags: [
+                "traefik.enable=true",
+                "traefik.http.routers.events.rule=Host(`swa.fireup.studio`) && PathPrefix(`/events`)",
+                "traefik.http.services.events.loadbalancer.server.port=8383",
+                "traefik.http.routers.events.tls=true",
+                "traefik.http.routers.events.tls.certResolver=lsresolver",
+                "traefik.http.middlewares.strip-events.stripprefix.prefixes=/events",
+                "traefik.http.routers.events.middlewares=strip-events,cors-headers@file"
+            ]
         });
         consulRegistered = true;
     } catch (err){
